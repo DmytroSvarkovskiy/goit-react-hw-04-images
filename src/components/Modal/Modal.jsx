@@ -6,23 +6,18 @@ const modalRoot = document.querySelector('#modal-root');
 export const Modal = ({ dataImage: { src, alt }, closeModal }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleEscpClick = e => {
-    console.log(e);
     if (e.code === 'Escape') {
       closeModal();
     }
   };
 
   useEffect(() => {
-    console.log('mount');
-    return console.log('unmount');
-  }, []);
+    window.addEventListener('keydown', handleEscpClick);
 
-  // componentDidMount() {
-  //   window.addEventListener('keydown', this.handleEscpClick);
-  // }
-  // componentWillUnmount() {
-  //   window.removeEventListener('keydown', this.handleEscpClick);
-  // }
+    return () => {
+      window.removeEventListener('keydown', handleEscpClick);
+    };
+  }, [handleEscpClick]);
 
   const onClick = e => {
     if (e.target === e.currentTarget) {
