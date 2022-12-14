@@ -17,31 +17,27 @@ export const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchName, setSearchName] = useState('');
   const [loaderVisible, setLoaderVisible] = useState(false);
-  const [modalData, setSModalData] = useState('');
+  const [modalData, setModalData] = useState('');
   const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!searchName) {
       return;
     }
-    async function fetchRes() {
-      const response = await fetchApi(searchName, currentPage);
-      setTotalResult(response.totalHits);
-      if (currentPage === 1) {
-        response.totalHits === 0
-          ? toast.error("Sorry, we didn't find anything")
-          : toast.success(`great, we found ${response.totalHits} images`);
-      }
-      return response;
-    }
     const getImage = async () => {
       try {
         setLoaderVisible(true);
-        const response = await fetchRes();
+        const response = await fetchApi(searchName, currentPage);
         setSearchResults(prevSearchResults => [
           ...prevSearchResults,
           ...response.hits,
         ]);
+        setTotalResult(response.totalHits);
+        if (currentPage === 1) {
+          response.totalHits === 0
+            ? toast.error("Sorry, we didn't find anything")
+            : toast.success(`great, we found ${response.totalHits} images`);
+        }
       } catch {
         setError(true);
       } finally {
@@ -58,6 +54,8 @@ export const App = () => {
       setSearchName(word);
       setCurrentPage(1);
       setSearchResults([]);
+    } else {
+      toast.info('Please enter a new word');
     }
   };
 
@@ -71,7 +69,7 @@ export const App = () => {
     const currentItem = searchResults.find(
       element => element.id === currentElId
     );
-    setSModalData(currentItem.largeImageURL);
+    setModalData(currentItem.largeImageURL);
   };
   const loadMoreClick = () => {
     setCurrentPage(prevPage => prevPage + 1);
