@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import { Formik } from 'formik';
 import {
   Input,
@@ -17,7 +18,7 @@ export const Searchbar = ({ onSubmit }) => {
     if (value.search) {
       onSubmit(value.search);
       resetForm();
-    }
+    } else toast.info('Please enter a word');
   };
   return (
     <SearchbarHeader>

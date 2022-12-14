@@ -10,6 +10,7 @@ import { GlobalStyle } from 'components/GlobalStyle';
 import { Loader } from 'components/Loader/Loader';
 import { Modal } from 'components/Modal/Modal';
 import { CoolPage } from '../ScrollToTop/ScrollToTop';
+
 export const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [totalResult, setTotalResult] = useState(0);
@@ -36,7 +37,7 @@ export const App = () => {
         if (currentPage === 1) {
           response.totalHits === 0
             ? toast.error("Sorry, we didn't find anything")
-            : toast.success(`great, we found ${response.totalHits} images`);
+            : toast.success(`Great, we found ${response.totalHits} images`);
         }
       } catch {
         setError(true);
@@ -55,7 +56,7 @@ export const App = () => {
       setCurrentPage(1);
       setSearchResults([]);
     } else {
-      toast.info('Please enter a new word');
+      toast.info('This results is now on the screen');
     }
   };
 
