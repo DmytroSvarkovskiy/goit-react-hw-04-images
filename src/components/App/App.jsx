@@ -48,15 +48,16 @@ export const App = () => {
         setLoaderVisible(false);
       }
     };
+
     getImage();
-  }, [searchName, currentPage]);
+  }, [currentPage, searchName]);
 
   const findImage = word => {
     setError(false);
     if (searchName !== word) {
       setSearchName(word);
       setCurrentPage(1);
-      searchResults([]);
+      setSearchResults([]);
     }
   };
 

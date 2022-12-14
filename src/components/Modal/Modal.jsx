@@ -35,8 +35,5 @@ export const Modal = ({ dataImage, closeModal }) => {
 
 Modal.propTypes = {
   closeModal: PropTypes.func.isRequired,
-  dataImage: PropTypes.shape({
-    src: PropTypes.string.isRequired,
-    alt: PropTypes.string.isRequired,
-  }),
+  dataImage: PropTypes.string.isRequired,
 };
