@@ -16,3 +16,6 @@ export const ModalWindow = styled.div`
   position: absolute;
   max-height: calc(100vh - 24px);
 `;
+export const Img = styled.img`
+  width: 70vw;
+`;

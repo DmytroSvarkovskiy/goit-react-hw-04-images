@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import { useEffect } from 'react';
-import { Overlay, ModalWindow } from './Modal.styled';
+import { Overlay, ModalWindow, Img } from './Modal.styled';
 const modalRoot = document.querySelector('#modal-root');
 export const Modal = ({ dataImage, closeModal }) => {
   useEffect(() => {
@@ -26,7 +26,7 @@ export const Modal = ({ dataImage, closeModal }) => {
   return createPortal(
     <Overlay onClick={onClick}>
       <ModalWindow>
-        <img src={dataImage} alt="modal-img" />
+        <Img src={dataImage} alt="modal-img" />
       </ModalWindow>
     </Overlay>,
     modalRoot
