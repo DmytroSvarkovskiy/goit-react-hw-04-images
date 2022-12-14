@@ -5,7 +5,7 @@ export const Overlay = styled.div`
   left: 0;
   width: 100%;
   min-height: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,5 +17,5 @@ export const ModalWindow = styled.div`
   max-height: calc(100vh - 24px);
 `;
 export const Img = styled.img`
-  width: 70vw;
+  width: 75vw;
 `;
