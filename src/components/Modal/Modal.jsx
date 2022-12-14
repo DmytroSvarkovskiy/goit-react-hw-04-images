@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useEffect } from 'react';
 import { Overlay, ModalWindow } from './Modal.styled';
 const modalRoot = document.querySelector('#modal-root');
-export const Modal = ({ dataImage: { src, alt }, closeModal }) => {
+export const Modal = ({ dataImage, closeModal }) => {
   useEffect(() => {
     const handleEscpClick = e => {
       if (e.code === 'Escape') {
@@ -26,7 +26,7 @@ export const Modal = ({ dataImage: { src, alt }, closeModal }) => {
   return createPortal(
     <Overlay onClick={onClick}>
       <ModalWindow>
-        <img src={src} alt={alt} />
+        <img src={dataImage} alt="modal-img" />
       </ModalWindow>
     </Overlay>,
     modalRoot

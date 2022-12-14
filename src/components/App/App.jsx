@@ -5,118 +5,94 @@ import { Searchbar } from '../Searchbar/Searchbar';
 import { Button } from '../Button/Button';
 import { ImageGallery } from '../ImageGallery/ImageGallery';
 import { Wrapper, Error } from './App.styled';
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { GlobalStyle } from 'components/GlobalStyle';
 import { Loader } from 'components/Loader/Loader';
 import { Modal } from 'components/Modal/Modal';
 import { CoolPage } from '../ScrollToTop/ScrollToTop';
-export class App extends Component {
-  state = {
-    modalVisible: false,
-    totalResult: 0,
-    searchResults: [],
-    currentPage: 1,
-    searchName: '',
-    loaderVisible: false,
-    modalData: {},
-    error: false,
-  };
+export const App = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [totalResult, setTotalResult] = useState(0);
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchName, setSearchName] = useState('');
+  const [loaderVisible, setLoaderVisible] = useState(false);
+  const [modalData, setSModalData] = useState('');
+  const [error, setError] = useState(false);
 
-  componentDidUpdate(_, prevState) {
-    if (
-      prevState.searchName !== this.state.searchName ||
-      prevState.currentPage !== this.state.currentPage
-    ) {
-      this.getImage();
+  useEffect(() => {
+    if (!searchName) {
+      return;
     }
-  }
-
-  fetchRes = async () => {
-    const response = await fetchApi(
-      this.state.searchName,
-      this.state.currentPage
-    );
-    this.setState({ totalResult: response.totalHits });
-    if (this.state.currentPage === 1) {
-      response.totalHits === 0
-        ? toast.error("Sorry, we didn't find anything")
-        : toast.success(`great, we found ${response.totalHits} images`);
+    async function fetchRes() {
+      const response = await fetchApi(searchName, currentPage);
+      setTotalResult(response.totalHits);
+      if (currentPage === 1) {
+        response.totalHits === 0
+          ? toast.error("Sorry, we didn't find anything")
+          : toast.success(`great, we found ${response.totalHits} images`);
+      }
+      return response;
     }
-    return response;
-  };
+    const getImage = async () => {
+      try {
+        setLoaderVisible(true);
+        const response = await fetchRes();
+        setSearchResults(prevSearchResults => [
+          ...prevSearchResults,
+          ...response.hits,
+        ]);
+      } catch {
+        setError(true);
+      } finally {
+        setLoaderVisible(false);
+      }
+    };
+    getImage();
+  }, [searchName, currentPage]);
 
-  findImage = word => {
-    this.setState({ error: false });
-    if (this.state.searchName !== word) {
-      this.setState({ searchName: word });
-      this.setState({ currentPage: 1 });
-      this.setState({ searchResults: [] });
+  const findImage = word => {
+    setError(false);
+    if (searchName !== word) {
+      setSearchName(word);
+      setCurrentPage(1);
+      searchResults([]);
     }
   };
 
-  togleModal = () => {
-    this.setState({ modalVisible: !this.state.modalVisible });
+  const togleModal = () => {
+    setModalVisible(!modalVisible);
   };
 
-  onImageClick = e => {
-    this.togleModal();
+  const onImageClick = e => {
+    togleModal();
     const currentElId = Number(e.target.id);
-    const currentItem = this.state.searchResults.find(
+    const currentItem = searchResults.find(
       element => element.id === currentElId
     );
-    const modalData = {
-      src: currentItem.largeImageURL,
-      alt: currentItem.tags,
-    };
-    this.setState({ modalData });
+    setSModalData(currentItem.largeImageURL);
   };
-  loadMoreClick = () => {
-    this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
+  const loadMoreClick = () => {
+    setCurrentPage(prevPage => prevPage + 1);
   };
 
-  getImage = async () => {
-    try {
-      this.setState({ loaderVisible: true });
-      const response = await this.fetchRes();
-      this.setState(prevState => ({
-        searchResults: [...prevState.searchResults, ...response.hits],
-      }));
-    } catch {
-      this.setState({ error: true });
-    } finally {
-      this.setState({ loaderVisible: false });
-    }
-  };
-
-  render() {
-    const {
-      error,
-      modalData,
-      totalResult,
-      searchResults,
-      modalVisible,
-      loaderVisible,
-    } = this.state;
-    const totalPages = Math.ceil(totalResult / searchResults.length);
-    return (
-      <Wrapper>
-        <GlobalStyle />
-        <Searchbar onSubmit={this.findImage} />
-        {error && <Error>Something went wrong, please try again</Error>}
-        {modalVisible && (
-          <Modal dataImage={modalData} closeModal={this.togleModal} />
-        )}
-        <ImageGallery
-          searchResults={searchResults}
-          lookBigImg={this.onImageClick}
-        ></ImageGallery>
-        {loaderVisible && <Loader />}
-        {searchResults.length !== 0 && totalPages !== 1 && (
-          <Button onClick={this.loadMoreClick} />
-        )}
-        <ToastContainer autoClose={3000} />
-        <CoolPage />
-      </Wrapper>
-    );
-  }
-}
+  const totalPages = Math.ceil(totalResult / searchResults.length);
+  return (
+    <Wrapper>
+      <GlobalStyle />
+      <Searchbar onSubmit={findImage} />
+      {error && <Error>Something went wrong, please try again</Error>}
+      {modalVisible && <Modal dataImage={modalData} closeModal={togleModal} />}
+      <ImageGallery
+        searchResults={searchResults}
+        lookBigImg={onImageClick}
+      ></ImageGallery>
+      {loaderVisible && <Loader />}
+      {searchResults.length !== 0 && totalPages !== 1 && (
+        <Button onClick={loadMoreClick} />
+      )}
+      <ToastContainer autoClose={3000} />
+      <CoolPage />
+    </Wrapper>
+  );
+};
