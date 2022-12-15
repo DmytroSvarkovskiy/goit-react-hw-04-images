@@ -61,7 +61,7 @@ export const App = () => {
   };
 
   const togleModal = () => {
-    setModalVisible(!modalVisible);
+    setModalVisible(prevModalVisible => !prevModalVisible);
   };
 
   const onImageClick = e => {
